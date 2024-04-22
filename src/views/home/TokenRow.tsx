@@ -59,7 +59,7 @@ const getUserbalance = async (connection: Connection, mint: PublicKey, owner: Pu
     }
 }
 const TokenRow=props=>{
-    const {tokenInfo,vaultImpl,...others}=props;
+    const {tokenInfo,vaultImpl,children,...others}=props;
     const [expanded, setExpanded] = useState(false);
     const [loading, setLoading] = useState(false);
     const [uiState, setUiState] = useState<IData>(initialData);
@@ -71,6 +71,29 @@ const TokenRow=props=>{
     const { connection } = useConnection();
     const { networkConfiguration } = useNetworkConfiguration();
     const URL = KEEPER_URL[networkConfiguration];
+
+    const [vaultUnlockedAmount, setVaultUnlockedAmount] = useState<number>(0)
+    const [vaultStateAPI, setVaultStateAPI] = useState<VaultStateAPI>({
+        enable: false,
+        token_amount: 0,
+        total_amount: 0,
+        lp_supply: 0,
+        strategies: []
+    });
+
+    // Process vault information
+    const fetchVaultInformation = async () => {
+        const unlockedAmount = await vaultImpl.getWithdrawableAmount()
+        setVaultUnlockedAmount(unlockedAmount.toNumber())
+
+        const vaultsStateResponse = await fetch(`${URL}/vault_state/${tokenInfo.address}`)
+        const vaultsState = await vaultsStateResponse.json() as VaultStateAPI;
+        setVaultStateAPI(vaultsState)
+    }
+    useEffect(() => {
+        fetchVaultInformation()
+    }, [vaultImpl])
+
     const onClickMaxDeposit = () => {
         // If it's SOL, we need to reserve some gas
         if (tokenInfo.address === SOL_MINT.toString()) {
@@ -90,20 +113,20 @@ const TokenRow=props=>{
             if (Number(depositAmount) <= 0 || loading) return;
 
             const amountInLamports = toLamports(Number(depositAmount), tokenInfo.decimals);
-            // const tx = await vaultImpl.deposit(publicKey, new BN(amountInLamports));
-            // const signedTx = await signTransaction(tx);
-            // const txid = await connection.sendRawTransaction(signedTx.serialize());
+            const tx = await vaultImpl.deposit(publicKey, new BN(amountInLamports));
+            const signedTx = await signTransaction(tx);
+            const txid = await connection.sendRawTransaction(signedTx.serialize());
 
-            // notify({
-            //     message: `Submitting transaction...`,
-            //     txid,
-            // })
+            notify({
+                message: `Submitting transaction...`,
+                txid,
+            })
 
-            // await connection.confirmTransaction({ signature: txid, ...await connection.getLatestBlockhash() });
-            // notify({
-            //     message: `Succesfully deposited`,
-            //     txid,
-            // })
+            await connection.confirmTransaction({ signature: txid, ...await connection.getLatestBlockhash() });
+            notify({
+                message: `Succesfully deposited`,
+                txid,
+            })
         } catch (error) {
             console.log(error)
             notify({
@@ -126,20 +149,20 @@ const TokenRow=props=>{
             if (Number(withdrawAmount) <= 0 || loading) return;
 
             const amountInLamports = toLamports(Number(withdrawAmount), tokenInfo.decimals);
-            // const tx = await vaultImpl.withdraw(publicKey, new BN(amountInLamports));
-            // const signedTx = await signTransaction(tx);
-            // const txid = await connection.sendRawTransaction(signedTx.serialize());
+            const tx = await vaultImpl.withdraw(publicKey, new BN(amountInLamports));
+            const signedTx = await signTransaction(tx);
+            const txid = await connection.sendRawTransaction(signedTx.serialize());
 
-            // notify({
-            //     message: `Submitting transaction...`,
-            //     txid,
-            // })
+            notify({
+                message: `Submitting transaction...`,
+                txid,
+            })
 
-            // await connection.confirmTransaction({ signature: txid, ...await connection.getLatestBlockhash() });
-            // notify({
-            //     message: `Succesfully withdrawn`,
-            //     txid,
-            // })
+            await connection.confirmTransaction({ signature: txid, ...await connection.getLatestBlockhash() });
+            notify({
+                message: `Succesfully withdrawn`,
+                txid,
+            })
         } catch (error) {
             console.log(error)
             notify({
@@ -200,7 +223,7 @@ const TokenRow=props=>{
                         </div>
                     </div>
                     <div className='mt-2'>
-                        {/* {children} */}
+                        {children}
                     </div>
                     <button type='button' className='mt-4 flex w-full justify-center' onClick={() => setExpanded(!expanded)}>
                         <p className='px-4 py-1 font-bold border rounded-lg'>{expanded ? 'Hide' : 'Show more'}</p>

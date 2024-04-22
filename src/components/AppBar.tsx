@@ -17,7 +17,7 @@ const WalletAndSettings: FC = ({ }) => {
 
   return (
     <div className='flex'>
-      <WalletMultiButton className="btn btn-ghost" />
+      
 
       <div className="dropdown dropdown-end flex">
         <div tabIndex={0} className="btn btn-ghost text-right flex items-center space-x-2">
@@ -40,6 +40,7 @@ const WalletAndSettings: FC = ({ }) => {
           </li>
         </ul>
       </div>
+      <WalletMultiButton className="btn btn-ghost" />
     </div>
   )
 }
@@ -48,9 +49,15 @@ export const AppBar: FC = props => {
   return (
     <div className='justify-between flex h-16 w-full'>
       {/* NavBar / Header */}
-      <div className="w-full flex justify-between items-center md:mb-2 shadow-lg bg-neutral text-neutral-content">
-        <div className="">
-        </div>
+      <div className="w-full flex justify-around items-center md:mb-2 shadow-lg  text-neutral-content ">
+        {/* <div className="">
+          <label htmlFor="my-drawer" className="btn btn-square btn-ghost">
+
+            <svg className="inline-block w-6 h-6 stroke-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </label>
+        </div> */}
 
         {/* Nav Links */}
         <div className="hidden md:inline">
@@ -71,18 +78,13 @@ export const AppBar: FC = props => {
               </svg>
             </div>
 
-            <Link href="/">
-              <a className="btn btn-ghost btn-xs rounded-btn">Home</a>
-            </Link>
-
-            <Link href="https://vaults.mercurial.finance">
-              <a target={'_blank'} className="btn btn-ghost btn-xs rounded-btn">Visit Mercurial Finance</a>
-            </Link>
-
-            <Link href="/affiliate">
-              <a className="btn btn-ghost btn-xs rounded-btn">Affiliate demo</a>
-            </Link>
+            
           </div>
+        </div>
+        <div className='flex items-center' >
+          <Link href="/">
+            <a className="btn btn-ghost btn-xs rounded-btn">Home</a>
+          </Link>
         </div>
 
         {/* Wallet & Settings */}

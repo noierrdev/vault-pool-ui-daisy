@@ -10,6 +10,7 @@ import { useNetworkConfiguration } from 'contexts/NetworkConfigurationProvider';
 import { Cluster } from '@solana/web3.js';
 import { tokenMap,newTokenMap } from '../../constants';
 import TokenRow from './TokenRow';
+import VaultsHeader from '../../components/VaultsHeader'
 
 export const HomeView: FC = ({ }) => {
   const { connection } = useConnection();
@@ -17,16 +18,28 @@ export const HomeView: FC = ({ }) => {
   const URL = KEEPER_URL[networkConfiguration];
 
   const [availableVaults, setAvailableVaults] = useState<{ vaultImpl: VaultImpl, vaultInfo: VaultInfo }[]>([]);
+  const [availableTokens,setAvailableTokens]=useState<{ vaultImpl: VaultImpl}[]>([]);
 
   useEffect(() => {
+    
     const init = async () => {
-      const vaultsInfoResponse = await fetch(`${URL}/vault_info`)
-      const vaultsInfo = await vaultsInfoResponse.json() as VaultInfo[];
+      var vaultsInfoResponse;
+      var vaultsInfo=[];
+      try{
+        vaultsInfoResponse = await fetch(`${URL}/vault_info`);
+        vaultsInfo = await vaultsInfoResponse.json() as VaultInfo[];
+      }catch(e){
+
+      }
+      
+      // const vaultsInfoResponse = await fetch(`https://app.meteora.ag/vault/vault_info`)
+      
 
       const vaultsToInit = vaultsInfo
         .map(async (vault) => {
           const tokenInfo = tokenMap.find(token => token.address === vault.token_address);
           if (!tokenInfo) return null;
+          if(vault.strategies.length==0) return null;
 
           return {
             vaultInfo: vault,
@@ -44,32 +57,44 @@ export const HomeView: FC = ({ }) => {
       Promise.all(vaultsToInit).then((availableVaults) => setAvailableVaults(availableVaults.filter(Boolean)));
       // Promise.all(vaultsToAdd).then((availableVaults) => setAvailableVaults(availableVaults.filter(Boolean)));
     }
-
-    if (tokenMap.length === 0) return;
-    init();
-  }, [tokenMap, connection, networkConfiguration])
-  useEffect(()=>{
-    if(availableVaults){
-      console.log(availableVaults)
-    }
-  },[availableVaults])
-  return (
-    <div className='flex items-center justify-center flex-col my-8'>
-      {availableVaults.map(vault => <VaultRow key={vault.vaultInfo.token_address} vaultImpl={vault.vaultImpl} vaultInfo={vault.vaultInfo} />)}
-      {newTokenMap.map( (tokenInfo,index)=>{
-        console.log(tokenInfo)
-        async function getVaultImpl(){
-          return await VaultImpl.create(
+    const tokenInit=async ()=>{
+      const tokensToInit=newTokenMap.map(async tokenInfo=>{
+        return {
+          vaultImpl: await VaultImpl.create(
             connection,
             tokenInfo,
             {
               cluster: networkConfiguration as Cluster,
             },
-          )
-        };
-        var vaultImpl=getVaultImpl();
+          ),
+        }
+      });
+      console.log(tokensToInit)
+      Promise.all(tokensToInit).then((availableTokens) => setAvailableTokens(availableTokens.filter(Boolean)));
+    }
+
+    if (tokenMap.length === 0) return;
+    init();
+    tokenInit();
+  }, [tokenMap,newTokenMap, connection, networkConfiguration])
+  // useEffect(()=>{
+  //   if(availableVaults){
+  //     console.log(availableVaults)
+  //   }
+  // },[availableVaults])
+  useEffect(()=>{
+    if(availableTokens){
+      console.log(availableTokens)
+    }
+  },[availableTokens])
+  return (
+    <div className='flex items-center justify-center flex-col my-8'>
+      <VaultsHeader/>
+      {availableVaults.map(vault => <VaultRow key={vault.vaultInfo.token_address} vaultImpl={vault.vaultImpl} vaultInfo={vault.vaultInfo} />)}
+      {availableTokens.length>0&&newTokenMap.map( (tokenInfo,index)=>{
+        console.log(availableTokens[index])
         return (
-          <TokenRow key={index} vaultImpl={vaultImpl} tokenInfo={tokenInfo} />
+          <TokenRow key={index} vaultImpl={availableTokens[index].vaultImpl} tokenInfo={tokenInfo} />
         )
       })}
     </div>
