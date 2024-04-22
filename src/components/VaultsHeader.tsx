@@ -1,7 +1,8 @@
 import React from 'react'
 const VaultsHeader=props=>{
     return (
-        <div className=" flex items-end justify-around" >
+        <div className=" flex items-end justify-around mt-[-300px]" >
+            
             <div className='w-[50%]' >
                 <div className='text-white text-5xl font-bold mb-4' >Dynamic Vaults</div>
                 <div className='text-white text-xl font-bold mb-4' >

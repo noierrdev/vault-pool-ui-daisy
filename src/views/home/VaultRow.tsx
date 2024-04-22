@@ -245,7 +245,7 @@ const VaultRow: React.FC<{ vaultImpl: VaultImpl, vaultInfo: VaultInfo }> = ({ va
     const onClickMaxWithdraw = () => setWithdrawAmount(uiState.userLPBalance.toString())
 
     return (
-        <div key={tokenInfo.address} className={`w-[80%] mt-2 bg-white p-4 rounded-lg text-black ${loading ? 'animate-pulse cursor-not-allowed' : ''}`}>
+        <div key={tokenInfo.address} className={`w-[80%] mt-2 bg-white p-4  rounded-lg text-black ${loading ? 'animate-pulse cursor-not-allowed' : ''}`}>
             <div className='flex-col lg:flex text-sm justify-between'>
                 <div className='flex w-[25%] space-x-4 items-center'>
                     <img alt={tokenInfo.symbol} src={tokenInfo.logoURI} height={28} width={28} className='object-contain' />

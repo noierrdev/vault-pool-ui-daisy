@@ -88,7 +88,16 @@ export const HomeView: FC = ({ }) => {
     }
   },[availableTokens])
   return (
-    <div className='flex items-center justify-center flex-col my-8'>
+    <>
+    <div className="w-full z-[-10] relative bg-[#151B32] overflow-hidden transition-all h-60 lg:h-72 h-[326px] lg:h-[352px]">
+      <div className="relative mx-auto max-w-[90vw] xl:max-w-7xl w-full h-full">
+          <div className="absolute flex items-center justify-center left-0 -top-72 h-[750px] w-[750px] bg-[#FE4476]/20 blur-[166px] safari-blur"></div>
+          <div className="absolute flex items-center justify-center left-1/2 -translate-x-1/4 -top-60 h-[750px] w-[750px] bg-[#FF852C]/20 blur-[200px] safari-blur"></div>
+          <div style={{animationDelay:"5s"}} className="h-[400px] w-[400px] left-0 -top-[250px] bg-[#EC2737] lg:animate-expand blur-sm safari-blur rounded-full opacity-0"></div>
+          <div className="absolute h-[800px] w-[800px] left-1/2 top-[70px] bg-[#FF6F57] lg:animate-expand blur-sm safari-blur rounded-full opacity-0"></div>
+      </div>
+    </div>
+    <div className='flex items-center justify-center flex-col my-8 '>
       <VaultsHeader/>
       {availableVaults.map(vault => <VaultRow key={vault.vaultInfo.token_address} vaultImpl={vault.vaultImpl} vaultInfo={vault.vaultInfo} />)}
       {availableTokens.length>0&&newTokenMap.map( (tokenInfo,index)=>{
@@ -98,5 +107,6 @@ export const HomeView: FC = ({ }) => {
         )
       })}
     </div>
+    </>
   );
 };
