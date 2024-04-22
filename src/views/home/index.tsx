@@ -58,9 +58,18 @@ export const HomeView: FC = ({ }) => {
       {availableVaults.map(vault => <VaultRow key={vault.vaultInfo.token_address} vaultImpl={vault.vaultImpl} vaultInfo={vault.vaultInfo} />)}
       {newTokenMap.map( (tokenInfo,index)=>{
         console.log(tokenInfo)
-        
+        async function getVaultImpl(){
+          return await VaultImpl.create(
+            connection,
+            tokenInfo,
+            {
+              cluster: networkConfiguration as Cluster,
+            },
+          )
+        };
+        var vaultImpl=getVaultImpl();
         return (
-          <TokenRow key={index} vaultImpl={{}} tokenInfo={tokenInfo} />
+          <TokenRow key={index} vaultImpl={vaultImpl} tokenInfo={tokenInfo} />
         )
       })}
     </div>
