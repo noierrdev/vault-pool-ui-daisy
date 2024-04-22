@@ -5,10 +5,11 @@ import { useConnection } from '@solana/wallet-adapter-react';
 import VaultImpl, { KEEPER_URL } from '@mercurial-finance/vault-sdk';
 
 import VaultRow from './VaultRow';
-import { VaultInfo } from 'types';
+import { StrategyType, VaultInfo } from 'types';
 import { useNetworkConfiguration } from 'contexts/NetworkConfigurationProvider';
 import { Cluster } from '@solana/web3.js';
 import { tokenMap } from '../../constants';
+import TokenRow from './TokenRow';
 
 export const HomeView: FC = ({ }) => {
   const { connection } = useConnection();
@@ -39,7 +40,9 @@ export const HomeView: FC = ({ }) => {
           }
         });
 
+
       Promise.all(vaultsToInit).then((availableVaults) => setAvailableVaults(availableVaults.filter(Boolean)));
+      // Promise.all(vaultsToAdd).then((availableVaults) => setAvailableVaults(availableVaults.filter(Boolean)));
     }
 
     if (tokenMap.length === 0) return;
@@ -53,6 +56,13 @@ export const HomeView: FC = ({ }) => {
   return (
     <div className='flex items-center justify-center flex-col my-8'>
       {availableVaults.map(vault => <VaultRow key={vault.vaultInfo.token_address} vaultImpl={vault.vaultImpl} vaultInfo={vault.vaultInfo} />)}
+      {tokenMap.map( (tokenInfo,index)=>{
+        console.log(tokenInfo)
+        
+        return (
+          <TokenRow key={index} vaultImpl={{}} tokenInfo={tokenInfo} />
+        )
+      })}
     </div>
   );
 };
