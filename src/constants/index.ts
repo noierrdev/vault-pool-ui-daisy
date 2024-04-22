@@ -1,8 +1,8 @@
 import { StaticTokenListResolutionStrategy, TokenInfo } from "@solana/spl-token-registry";
 
 const tokenMapOriginal = new StaticTokenListResolutionStrategy().resolve();
-// export const tokenMap: TokenInfo[] = Array.from(tokenMapOriginal).concat([
-  export const tokenMap: TokenInfo[] = Array.from([]).concat([
+export const tokenMap: TokenInfo[] = Array.from(tokenMapOriginal).concat([
+  // export const tokenMap: TokenInfo[] = Array.from([]).concat([
   {
     chainId: 103,
     address: '9NGDi2tZtNmCCp8SVLKNuGjuWAVwNF3Vap5tT8km5er9',
@@ -23,6 +23,11 @@ const tokenMapOriginal = new StaticTokenListResolutionStrategy().resolve();
     tags: undefined,
     extensions: undefined,
   },
+  
+  
+])
+
+export const newTokenMap:TokenInfo[]=Array.from([]).concat([
   {
     "chainId": 101,
     "address": "G6nZYEvhwFxxnp1KZr1v9igXtipuB5zL6oDGNMRZqF3q",
@@ -755,5 +760,4 @@ const tokenMapOriginal = new StaticTokenListResolutionStrategy().resolve();
       "website": "https://solanadon.com/"
     }
   },
-  
 ])

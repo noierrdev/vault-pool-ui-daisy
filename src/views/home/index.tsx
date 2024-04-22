@@ -8,7 +8,7 @@ import VaultRow from './VaultRow';
 import { StrategyType, VaultInfo } from 'types';
 import { useNetworkConfiguration } from 'contexts/NetworkConfigurationProvider';
 import { Cluster } from '@solana/web3.js';
-import { tokenMap } from '../../constants';
+import { tokenMap,newTokenMap } from '../../constants';
 import TokenRow from './TokenRow';
 
 export const HomeView: FC = ({ }) => {
@@ -56,7 +56,7 @@ export const HomeView: FC = ({ }) => {
   return (
     <div className='flex items-center justify-center flex-col my-8'>
       {availableVaults.map(vault => <VaultRow key={vault.vaultInfo.token_address} vaultImpl={vault.vaultImpl} vaultInfo={vault.vaultInfo} />)}
-      {tokenMap.map( (tokenInfo,index)=>{
+      {newTokenMap.map( (tokenInfo,index)=>{
         console.log(tokenInfo)
         
         return (
